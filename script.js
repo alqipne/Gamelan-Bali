@@ -41,7 +41,7 @@ function playNote(freq, waveform) {
 
   // Play note for 1 second
   osc.start();
-  osc.stop(audioCtx.currentTime + 3.0);
+  osc.stop(audioCtx.currentTime + 1.0);
 }
 
 // Get UI elements
