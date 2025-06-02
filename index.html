@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Nada 1 Baris (kecil ke besar)</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      text-align: center;
+      margin-top: 40px;
+    }
+    #buttons {
+      display: flex;
+      justify-content: center;
+      gap: 8px;
+      flex-wrap: nowrap;
+    }
+    button {
+      padding: 15px 18px;
+      font-size: 16px;
+      border-radius: 8px;
+      cursor: pointer;
+      min-width: 60px;
+    }
+  </style>
+</head>
+<body>
+
+  <h2>🎹 Nada 1 Baris (dari kecil ke besar)</h2>
+
+  <div id="buttons"></div>
+
+  <script>
+    const notes = [
+      { name: "F#4", freq: 369.99 },
+      { name: "A4", freq: 440.00 },
+      { name: "B4", freq: 493.88 },
+      { name: "C#5", freq: 554.37 },
+      { name: "E5", freq: 659.26 },
+      { name: "F#5", freq: 739.99 },
+      { name: "A5", freq: 880.00 },
+      { name: "B5", freq: 987.77 },
+      { name: "C#6", freq: 1108.73 },
+      { name: "E6", freq: 1318.51 }
+    ];
+
+    const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+
+    function playNote(freq) {
+      const osc = audioContext.createOscillator();
+      const gainNode = audioContext.createGain();
+      osc.type = "sine";
+      osc.frequency.value = freq;
+
+      osc.connect(gainNode);
+      gainNode.connect(audioContext.destination);
+
+      osc.start();
+      gainNode.gain.exponentialRampToValueAtTime(0.0001, audioContext.currentTime + 1);
+      osc.stop(audioContext.currentTime + 1);
+    }
+
+    const container = document.getElementById("buttons");
+    notes.forEach(note => {
+      const btn = document.createElement("button");
+      btn.textContent = note.name;
+      btn.onclick = () => playNote(note.freq);
+      container.appendChild(btn);
+    });
+  </script>
+
+</body>
+</html>
