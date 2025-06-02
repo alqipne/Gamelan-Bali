@@ -2,7 +2,8 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <!-- ✅ Mencegah zoom di perangkat mobile -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
   <title>Balinese Gamelan by @alqipne</title>
   <style>
     body {
@@ -90,6 +91,13 @@
 
     const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
 
+    // Pastikan AudioContext aktif setelah interaksi
+    document.body.addEventListener('click', () => {
+      if (audioCtx.state === 'suspended') {
+        audioCtx.resume();
+      }
+    });
+
     function playNote(freq, waveform) {
       const osc = audioCtx.createOscillator();
       const gain = audioCtx.createGain();
@@ -119,6 +127,18 @@
       };
       container.appendChild(btn);
     });
+  </script>
+
+  <!-- ✅ Cegah double-tap zoom di perangkat sentuh -->
+  <script>
+    let lastTouchEnd = 0;
+    document.addEventListener('touchend', function (event) {
+      const now = new Date().getTime();
+      if (now - lastTouchEnd <= 300) {
+        event.preventDefault();
+      }
+      lastTouchEnd = now;
+    }, false);
   </script>
 
 </body>
