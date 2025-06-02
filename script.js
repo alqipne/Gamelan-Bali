@@ -17,15 +17,17 @@ const notes = [
 // Create Web Audio context
 const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
 
-// Ensure audio context is resumed after user interaction (required on mobile)
-document.body.addEventListener('click', () => {
+// Ensure AudioContext resumes on interaction
+function resumeAudio() {
   if (audioCtx.state === 'suspended') {
     audioCtx.resume();
   }
-});
+}
 
 // Function to play a note with selected waveform
 function playNote(freq, waveform) {
+  resumeAudio(); // Make sure context is active
+
   const osc = audioCtx.createOscillator(); // oscillator node
   const gain = audioCtx.createGain(); // gain node for fade-out effect
 
@@ -35,32 +37,41 @@ function playNote(freq, waveform) {
   osc.connect(gain);
   gain.connect(audioCtx.destination);
 
-  // Start volume at 0.6 and decay exponentially
+  // Volume envelope
   gain.gain.setValueAtTime(0.6, audioCtx.currentTime);
   gain.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + 1.0);
 
-  // Play note for 1 second
   osc.start();
   osc.stop(audioCtx.currentTime + 1.0);
 }
 
-// Get UI elements
+// Get waveform select and button container
 const waveformSelect = document.getElementById("waveform");
 const container = document.getElementById("buttons");
 
-// Create button for each note
+// Create a button for each note
 notes.forEach(note => {
   const btn = document.createElement("button");
   btn.textContent = note.key;
   btn.dataset.key = note.key;
-  btn.onclick = () => {
+
+  // For desktop
+  btn.addEventListener("click", () => {
     const waveform = waveformSelect.value;
     playNote(note.freq, waveform);
-  };
+  });
+
+  // For mobile (touch responsiveness)
+  btn.addEventListener("touchstart", (e) => {
+    e.preventDefault(); // Prevent long tap, etc.
+    const waveform = waveformSelect.value;
+    playNote(note.freq, waveform);
+  });
+
   container.appendChild(btn);
 });
 
-// Listen for key presses to trigger notes
+// Play note on key press
 document.addEventListener('keydown', (e) => {
   const key = e.key;
   const note = notes.find(n => n.key === key);
@@ -68,7 +79,7 @@ document.addEventListener('keydown', (e) => {
     const waveform = waveformSelect.value;
     playNote(note.freq, waveform);
 
-    // Visual feedback on button press
+    // Visual feedback
     const btn = document.querySelector(`button[data-key="${key}"]`);
     if (btn) {
       btn.style.transform = "scale(0.96)";
