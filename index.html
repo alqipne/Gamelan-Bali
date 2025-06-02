@@ -2,69 +2,121 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Nada 1 Baris (kecil ke besar)</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Balinese Gamelan by @alqipne</title>
   <style>
     body {
       font-family: sans-serif;
       text-align: center;
-      margin-top: 40px;
+      background-color: #f7f1e3;
+      margin: 0;
+      padding: 20px;
     }
+
+    h2 {
+      margin-bottom: 10px;
+      font-size: 20px;
+    }
+
+    #controls {
+      margin-bottom: 20px;
+    }
+
+    select {
+      padding: 6px 10px;
+      font-size: 14px;
+    }
+
     #buttons {
       display: flex;
-      justify-content: center;
-      gap: 8px;
-      flex-wrap: nowrap;
+      justify-content: space-between;
+      width: 100%;
+      gap: 4px;
     }
+
     button {
-      padding: 15px 18px;
-      font-size: 16px;
-      border-radius: 8px;
+      flex: 1;
+      padding: 12px 0;
+      font-size: 14px;
+      border: none;
+      border-radius: 4px;
+      background-color: #ffb142;
+      color: white;
       cursor: pointer;
-      min-width: 60px;
+      transition: background-color 0.2s, transform 0.1s;
+    }
+
+    button:active {
+      transform: scale(0.96);
+    }
+
+    @media (max-width: 500px) {
+      button {
+        font-size: 12px;
+        padding: 10px 0;
+      }
     }
   </style>
 </head>
 <body>
 
-  <h2>🎹 Nada 1 Baris (dari kecil ke besar)</h2>
+  <h2>Balinese Gamelan by @alqipne</h2>
+
+  <div id="controls">
+    <label for="waveform">Waveform:</label>
+    <select id="waveform">
+      <option value="sine">sine</option>
+      <option value="square">square</option>
+      <option value="triangle">triangle</option>
+      <option value="sawtooth">sawtooth</option>
+    </select>
+  </div>
 
   <div id="buttons"></div>
 
   <script>
     const notes = [
-      { name: "F#4", freq: 369.99 },
+      { name: "D4", freq: 293.66 },
+      { name: "E4", freq: 329.63 },
+      { name: "G#4", freq: 415.30 },
       { name: "A4", freq: 440.00 },
-      { name: "B4", freq: 493.88 },
       { name: "C#5", freq: 554.37 },
+      { name: "D5", freq: 587.33 },
       { name: "E5", freq: 659.26 },
-      { name: "F#5", freq: 739.99 },
+      { name: "G#5", freq: 830.61 },
       { name: "A5", freq: 880.00 },
-      { name: "B5", freq: 987.77 },
-      { name: "C#6", freq: 1108.73 },
-      { name: "E6", freq: 1318.51 }
+      { name: "C#6", freq: 1108.73 }
     ];
 
-    const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+    const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
 
-    function playNote(freq) {
-      const osc = audioContext.createOscillator();
-      const gainNode = audioContext.createGain();
-      osc.type = "sine";
+    function playNote(freq, waveform) {
+      const osc = audioCtx.createOscillator();
+      const gain = audioCtx.createGain();
+
+      osc.type = waveform;
       osc.frequency.value = freq;
 
-      osc.connect(gainNode);
-      gainNode.connect(audioContext.destination);
+      osc.connect(gain);
+      gain.connect(audioCtx.destination);
+
+      gain.gain.setValueAtTime(0.6, audioCtx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + 1.0);
 
       osc.start();
-      gainNode.gain.exponentialRampToValueAtTime(0.0001, audioContext.currentTime + 1);
-      osc.stop(audioContext.currentTime + 1);
+      osc.stop(audioCtx.currentTime + 1.0);
     }
 
+    const waveformSelect = document.getElementById("waveform");
     const container = document.getElementById("buttons");
+
     notes.forEach(note => {
       const btn = document.createElement("button");
       btn.textContent = note.name;
-      btn.onclick = () => playNote(note.freq);
+      btn.onclick = () => {
+        const waveform = waveformSelect.value;
+        playNote(note.freq, waveform);
+      };
       container.appendChild(btn);
     });
   </script>
