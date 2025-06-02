@@ -1,4 +1,6 @@
-// Define notes with key and frequency
+// JavaScript
+
+// Define notes with keyboard key and frequency (in Hz)
 const notes = [
   { key: "1", freq: 293.66 },
   { key: "2", freq: 329.63 },
@@ -12,22 +14,20 @@ const notes = [
   { key: "0", freq: 1108.73 }
 ];
 
-// Create AudioContext
+// Create Web Audio context
 const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
 
-// Resume context on first user interaction
-const resumeAudioContext = () => {
-  if (audioCtx.state === "suspended") {
+// Ensure audio context is resumed after user interaction (required on mobile)
+document.body.addEventListener('click', () => {
+  if (audioCtx.state === 'suspended') {
     audioCtx.resume();
   }
-};
-document.addEventListener("touchstart", resumeAudioContext, { once: true });
-document.addEventListener("click", resumeAudioContext, { once: true });
+});
 
-// Function to play note
+// Function to play a note with selected waveform
 function playNote(freq, waveform) {
-  const osc = audioCtx.createOscillator();
-  const gain = audioCtx.createGain();
+  const osc = audioCtx.createOscillator(); // oscillator node
+  const gain = audioCtx.createGain(); // gain node for fade-out effect
 
   osc.type = waveform;
   osc.frequency.value = freq;
@@ -35,58 +35,49 @@ function playNote(freq, waveform) {
   osc.connect(gain);
   gain.connect(audioCtx.destination);
 
+  // Start volume at 0.6 and decay exponentially
   gain.gain.setValueAtTime(0.6, audioCtx.currentTime);
-  gain.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + 1);
+  gain.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + 1.0);
 
+  // Play note for 1 second
   osc.start();
-  osc.stop(audioCtx.currentTime + 1);
+  osc.stop(audioCtx.currentTime + 3.0);
 }
 
 // Get UI elements
 const waveformSelect = document.getElementById("waveform");
 const container = document.getElementById("buttons");
 
-// Create buttons and attach events
+// Create button for each note
 notes.forEach(note => {
   const btn = document.createElement("button");
   btn.textContent = note.key;
   btn.dataset.key = note.key;
-
-  // Click or tap
-  const handlePlay = () => {
+  btn.onclick = () => {
     const waveform = waveformSelect.value;
     playNote(note.freq, waveform);
-    animateButton(btn);
   };
-
-  btn.addEventListener("click", handlePlay);
-  btn.addEventListener("touchstart", (e) => {
-    e.preventDefault(); // prevent 300ms delay on iOS Safari
-    handlePlay();
-  });
-
   container.appendChild(btn);
 });
 
-// Handle keyboard input
-document.addEventListener("keydown", (e) => {
+// Listen for key presses to trigger notes
+document.addEventListener('keydown', (e) => {
   const key = e.key;
   const note = notes.find(n => n.key === key);
   if (note) {
     const waveform = waveformSelect.value;
     playNote(note.freq, waveform);
+
+    // Visual feedback on button press
     const btn = document.querySelector(`button[data-key="${key}"]`);
-    if (btn) animateButton(btn);
+    if (btn) {
+      btn.style.transform = "scale(0.96)";
+      setTimeout(() => btn.style.transform = "scale(1)", 150);
+    }
   }
 });
 
-// Animate button press
-function animateButton(btn) {
-  btn.style.transform = "scale(0.96)";
-  setTimeout(() => btn.style.transform = "scale(1)", 150);
-}
-
-// Prevent double-tap zoom (iOS Safari)
+// Prevent double-tap zoom on mobile
 let lastTouchEnd = 0;
 document.addEventListener('touchend', function (event) {
   const now = new Date().getTime();
