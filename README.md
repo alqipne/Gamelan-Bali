@@ -1,6 +1,6 @@
 # 🎼 Balinese Gamelan by @alqipne
 
-A simple and responsive web-based Balinese gamelan simulator using Web Audio API.  
+A simple and responsive web-based Balinese Gamelan (Gangsa) simulator using Web Audio API.  
 Play traditional gamelan tones mapped to numbers **1–0** using either your **keyboard** or by **tapping on-screen buttons** — works great on both desktop and mobile devices.
 
 https://alqipne.github.io/Gamelan-Bali/
@@ -10,7 +10,7 @@ https://alqipne.github.io/Gamelan-Bali/
 ## 🌟 Features
 
 - ✅ Responsive design for desktop & mobile
-- ✅ 10-tone gamelan scale (C#6 to D4)
+- ✅ 10-tone gamelan scale
 - ✅ Keyboard support (numbers 1–0)
 - ✅ Touch-friendly interface
 - ✅ Waveform selector: sine, square, triangle, sawtooth
