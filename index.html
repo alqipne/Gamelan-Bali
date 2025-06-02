@@ -1,67 +1,21 @@
+<!-- HTML -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
+  <!-- Prevent zoom on mobile for better UX -->
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
   <title>Balinese Gamelan by @alqipne</title>
-  <style>
-    body {
-      font-family: sans-serif;
-      text-align: center;
-      background-color: #f7f1e3;
-      margin: 0;
-      padding: 20px;
-    }
 
-    h2 {
-      margin-bottom: 10px;
-      font-size: 20px;
-    }
-
-    #controls {
-      margin-bottom: 20px;
-    }
-
-    select {
-      padding: 6px 10px;
-      font-size: 14px;
-    }
-
-    #buttons {
-      display: flex;
-      justify-content: space-between;
-      width: 100%;
-      gap: 4px;
-    }
-
-    button {
-      flex: 1;
-      padding: 12px 0;
-      font-size: 16px;
-      border: none;
-      border-radius: 4px;
-      background-color: #ffb142;
-      color: white;
-      cursor: pointer;
-      transition: background-color 0.2s, transform 0.1s;
-    }
-
-    button:active {
-      transform: scale(0.96);
-    }
-
-    @media (max-width: 500px) {
-      button {
-        font-size: 14px;
-        padding: 10px 0;
-      }
-    }
-  </style>
+  <!-- Link external CSS -->
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
 
+  <!-- Title -->
   <h2>Balinese Gamelan by @alqipne</h2>
 
+  <!-- Sound waveform selection -->
   <div id="controls">
     <label for="waveform">Waveform:</label>
     <select id="waveform">
@@ -72,91 +26,10 @@
     </select>
   </div>
 
+  <!-- Button container for notes -->
   <div id="buttons"></div>
 
-  <script>
-    const notes = [
-      { key: "1", freq: 293.66 },
-      { key: "2", freq: 329.63 },
-      { key: "3", freq: 415.30 },
-      { key: "4", freq: 440.00 },
-      { key: "5", freq: 554.37 },
-      { key: "6", freq: 587.33 },
-      { key: "7", freq: 659.26 },
-      { key: "8", freq: 830.61 },
-      { key: "9", freq: 880.00 },
-      { key: "0", freq: 1108.73 }
-    ];
-
-    const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-
-    // Aktifkan AudioContext saat interaksi
-    document.body.addEventListener('click', () => {
-      if (audioCtx.state === 'suspended') {
-        audioCtx.resume();
-      }
-    });
-
-    function playNote(freq, waveform) {
-      const osc = audioCtx.createOscillator();
-      const gain = audioCtx.createGain();
-
-      osc.type = waveform;
-      osc.frequency.value = freq;
-
-      osc.connect(gain);
-      gain.connect(audioCtx.destination);
-
-      gain.gain.setValueAtTime(0.6, audioCtx.currentTime);
-      gain.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + 1.0);
-
-      osc.start();
-      osc.stop(audioCtx.currentTime + 1.0);
-    }
-
-    const waveformSelect = document.getElementById("waveform");
-    const container = document.getElementById("buttons");
-
-    // Buat tombol
-    notes.forEach(note => {
-      const btn = document.createElement("button");
-      btn.textContent = note.key;
-      btn.dataset.key = note.key;
-      btn.onclick = () => {
-        const waveform = waveformSelect.value;
-        playNote(note.freq, waveform);
-      };
-      container.appendChild(btn);
-    });
-
-    // Trigger via keyboard
-    document.addEventListener('keydown', (e) => {
-      const key = e.key;
-      const note = notes.find(n => n.key === key);
-      if (note) {
-        const waveform = waveformSelect.value;
-        playNote(note.freq, waveform);
-        // Visual feedback
-        const btn = document.querySelector(`button[data-key="${key}"]`);
-        if (btn) {
-          btn.style.transform = "scale(0.96)";
-          setTimeout(() => btn.style.transform = "scale(1)", 150);
-        }
-      }
-    });
-  </script>
-
-  <!-- Cegah zoom dengan double-tap -->
-  <script>
-    let lastTouchEnd = 0;
-    document.addEventListener('touchend', function (event) {
-      const now = new Date().getTime();
-      if (now - lastTouchEnd <= 300) {
-        event.preventDefault();
-      }
-      lastTouchEnd = now;
-    }, false);
-  </script>
-
+  <!-- Load main JavaScript -->
+  <script src="script.js"></script>
 </body>
 </html>
