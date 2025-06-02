@@ -1,4 +1,3 @@
-# Gamelan-Bali
 # 🎼 Balinese Gamelan by @alqipne
 
 A simple and responsive web-based Balinese gamelan simulator using Web Audio API.  
