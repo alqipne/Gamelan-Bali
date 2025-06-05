@@ -49,17 +49,17 @@ const waveformSelect = document.getElementById("waveform");
 const container = document.getElementById("buttons");
 
 // Create button for each note
-// Create button for each note (besar ke kecil)
+// Create button for each note (tinggi makin kecil, posisi tengah)
 notes.forEach((note, index) => {
   const btn = document.createElement("button");
   btn.textContent = note.key;
   btn.dataset.key = note.key;
 
-  // Ukuran tombol makin kecil dari kiri ke kanan
-  const scale = 1 - index * 0.06; // dari 1.00 ke 0.46 (untuk 10 tombol)
-  btn.style.transform = `scale(${scale})`;
-  btn.style.transformOrigin = "top"; // agar skala dari atas
-  btn.style.flex = "1"; // tetap bagi ruang rata
+  // Tinggi makin kecil
+  const maxHeight = 150; // tinggi maksimum
+  const step = 10; // pengurangan per tombol
+  const height = maxHeight - (index * step);
+  btn.style.height = `${height}px`;
 
   btn.onclick = () => {
     const waveform = waveformSelect.value;
