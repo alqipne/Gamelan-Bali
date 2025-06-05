@@ -42,12 +42,7 @@ button {
   font-size: 16px;
   border: none;
   border-radius: 4px;
-  background: linear-gradient(90deg, 
-    #844414 0%,
-    #c7801d 20%,
-    #ffe233 50%,
-    #c7801d 80%,
-    #844414 100%;
+  background: linear-gradient(90deg, #844414 0%, #c7801d 20%, #ffe233 50%, #c7801d 80%, #844414 100%;
   color: white;
   cursor: pointer;
   transition: background-color 0.2s, transform 0.1s;
