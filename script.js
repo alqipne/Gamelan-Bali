@@ -57,7 +57,7 @@ notes.forEach((note, index) => {
 
   // Tinggi makin kecil
   const maxHeight = 150; // tinggi maksimum
-  const step = 3; // pengurangan per tombol
+  const step = 5; // pengurangan per tombol
   const height = maxHeight - (index * step);
   btn.style.height = `${height}px`;
 
