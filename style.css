@@ -29,8 +29,10 @@ select {
 #buttons {
   display: flex;
   justify-content: space-between;
+  align-items: center; /* ❗ PENTING: ini yang bikin tombol mengambang tengah */
   width: 100%;
   gap: 4px;
+  height: 200px; /* atau sesuaikan dengan ruang vertikal yang kamu mau */
 }
 
 /* Button appearance */
