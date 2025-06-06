@@ -31,27 +31,27 @@ select {
   justify-content: space-between;
   align-items: center; /* ❗ PENTING: ini yang bikin tombol mengambang tengah */
   width: 100%;
-  gap: 4px;
-  height: 200px; /* atau sesuaikan dengan ruang vertikal yang kamu mau */
+  gap: 5px; /* atau sesuaikan dengan ruang vertikal yang kamu mau */
 }
 
 /* Button appearance */
 button {
   flex: 1;
-  padding: 100px 0;
+  padding: 0px 0;
   font-size: 16px;
   border: none;
-  border-radius: 4px;
+  border-radius: 10px;
   background: linear-gradient(
     90deg,
     #844414 0%,
-    #c7801d 20%,
-    #ffe233 50%,
-    #c7801d 80%,
-    #844414 100%
+    #c7801d 10%,
+    #ffe233 40%,
+    #c7801d 70%
   );
   background-size: 200% 100%;
-  color: white;
+  color: #ffe233;
+  font-size: 16px;
+  text-shadow: -1px 1px 1px #844414;
   cursor: pointer;
   overflow: hidden;
   transition: background-color 0.2s, transform 0.1s;
